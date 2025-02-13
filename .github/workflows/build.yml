@@ -31,13 +31,13 @@ jobs:
     - uses: actions/checkout@main
       with:
         submodules: true
-    - name: Install Clang 18
+    - name: Install Clang 20
       run: |
         wget 'https://apt.llvm.org/llvm.sh'
-        sudo bash './llvm.sh' '18'
+        sudo bash './llvm.sh' '20'
         
-        for old in '/usr/bin/'*'-18'; do
-            declare new="$(sed 's/-18//g' <<< "${old}")"
+        for old in '/usr/bin/'*'-20'; do
+            declare new="$(sed 's/-20//g' <<< "${old}")"
             sudo unlink "${new}" 2>/dev/null || true
             sudo ln --symbolic "${old}" "${new}"
         done
