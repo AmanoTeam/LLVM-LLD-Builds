@@ -52,7 +52,7 @@ cd "${llvm_directory}/build"
 rm --force --recursive ./*
 
 cmake \
-	-DCMAKE_TOOLCHAIN_FILE="${workdir}/submodules/obggcc/toolchains/${host_triplet}.cmake" \
+	-DCMAKE_TOOLCHAIN_FILE="${OBGGCC_TOOLCHAIN}/usr/local/share/obggcc/cmake/${host_triplet}.cmake" \
 	-DCMAKE_BUILD_TYPE='MinSizeRel' \
 	-DCMAKE_CXX_FLAGS='-static-libgcc -static-libstdc++' \
 	-DCMAKE_INSTALL_PREFIX="${install_prefix}" \
