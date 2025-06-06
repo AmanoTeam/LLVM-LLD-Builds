@@ -14,7 +14,7 @@ jobs:
         target: [
           # 'alpha-unknown-linux-gnu',
           'x86_64-unknown-linux-gnu2.7',
-          'i386-unknown-linux-gnu2.3',
+          'i386-unknown-linux-gnu2.7',
           # 'arm-unknown-linux-gnueabi',
           'arm-unknown-linux-gnueabihf',
           # 'hppa-unknown-linux-gnu',
