@@ -64,7 +64,7 @@ cmake \
 	-DLLVM_INCLUDE_TESTS='OFF' \
 	-DLLVM_BUILD_DOCS='OFF' \
 	-DLLVM_BUILD_LLVM_DYLIB='ON' \
-	-DLLVM_ENABLE_LTO='ON' \
+	-DLLVM_ENABLE_LTO='OFF' \
 	-DLLVM_ENABLE_PROJECTS='lld' \
 	-DLLVM_TOOLCHAIN_TOOLS='llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer;llvm-windres;llvm-ml;llvm-readelf;llvm-size;llvm-cxxfilt' \
 	"${llvm_directory}/llvm"
