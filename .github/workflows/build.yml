@@ -21,10 +21,10 @@ jobs:
           'aarch64-unknown-linux-gnu',
           # 'mips-unknown-linux-gnu',
           # 'mipsel-unknown-linux-gnu',
-          'powerpc-unknown-linux-gnu2.13',
+          'powerpc-unknown-linux-gnu2.17',
           # 's390-unknown-linux-gnu',
           's390x-unknown-linux-gnu',
-          'sparc-unknown-linux-gnu2.13',
+          'sparc-unknown-linux-gnu2.17',
           'powerpc64le-unknown-linux-gnu'
         ]
     steps:
