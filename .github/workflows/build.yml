@@ -24,7 +24,7 @@ jobs:
           'powerpc-unknown-linux-gnu2.7',
           # 's390-unknown-linux-gnu',
           's390x-unknown-linux-gnu',
-          'sparc-unknown-linux-gnu2.3',
+          'sparc-unknown-linux-gnu2.7',
           'powerpc64le-unknown-linux-gnu'
         ]
     steps:
