@@ -15,7 +15,7 @@ declare -r max_jobs="$(($(nproc) * 17))"
 
 declare -r host_triplet="${1}"
 
-source "./submodules/obggcc/toolchains/${host_triplet}.sh"
+source "${OBGGCC_HOME}/usr/local/share/obggcc/autotools/${host_triplet}.sh"
 
 if ! [ -f "${llvm_tarball}" ]; then
 	wget --no-verbose "https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-${llvm_version}.tar.gz" --output-document="${llvm_tarball}"
@@ -64,6 +64,7 @@ cmake \
 	-DLLVM_INCLUDE_TESTS='OFF' \
 	-DLLVM_BUILD_DOCS='OFF' \
 	-DLLVM_BUILD_LLVM_DYLIB='ON' \
+	-DLLVM_ENABLE_LTO='ON' \
 	-DLLVM_ENABLE_PROJECTS='lld' \
 	-DLLVM_TOOLCHAIN_TOOLS='llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer;llvm-windres;llvm-ml;llvm-readelf;llvm-size;llvm-cxxfilt' \
 	"${llvm_directory}/llvm"
