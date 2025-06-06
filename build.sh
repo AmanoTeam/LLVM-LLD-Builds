@@ -15,7 +15,7 @@ declare -r max_jobs="$(($(nproc) * 17))"
 
 declare -r host_triplet="${1}"
 
-source "${OBGGCC_HOME}/usr/local/share/obggcc/autotools/${host_triplet}.sh"
+source "${OBGGCC_TOOLCHAIN}/usr/local/share/obggcc/autotools/${host_triplet}.sh"
 
 if ! [ -f "${llvm_tarball}" ]; then
 	wget --no-verbose "https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-${llvm_version}.tar.gz" --output-document="${llvm_tarball}"
