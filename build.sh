@@ -106,7 +106,7 @@ rm --force --recursive ./*
 cmake \
 	-DCMAKE_TOOLCHAIN_FILE="${OBGGCC_TOOLCHAIN}/usr/local/share/obggcc/cmake/${host_triplet}.cmake" \
 	-DCMAKE_BUILD_TYPE='MinSizeRel' \
-	-DCMAKE_CXX_FLAGS="-fplt" \
+	-DCMAKE_CXX_FLAGS="-static-libstdc++ -static-libgcc" \
 	-DCMAKE_INSTALL_PREFIX="${install_prefix}" \
 	-DLLVM_HOST_TRIPLE="${host_triplet}" \
 	-DLLVM_NATIVE_TOOL_DIR='/usr/bin' \
@@ -120,7 +120,7 @@ cmake \
 	-DLLVM_ENABLE_PROJECTS='lld' \
 	-DLLVM_ENABLE_ZSTD='FORCE_ON' \
 	-DLLVM_TOOLCHAIN_TOOLS='llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer;llvm-windres;llvm-ml;llvm-readelf;llvm-size;llvm-cxxfilt' \
-	-Dzstd_LIBRARY="${CROSS_COMPILE_SYSROOT}/lib/libzstd.so" \
+	-Dzstd_LIBRARY="${CROSS_COMPILE_SYSROOT}/lib/libzstd.a" \
 	-Dzstd_INCLUDE_DIR="${CROSS_COMPILE_SYSROOT}/include" \
 	-DCMAKE_INSTALL_RPATH='$ORIGIN/../lib' \
 	"${llvm_directory}/llvm"
