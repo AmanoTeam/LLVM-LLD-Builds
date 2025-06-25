@@ -106,6 +106,7 @@ rm --force --recursive ./*
 cmake \
 	-DCMAKE_TOOLCHAIN_FILE="${OBGGCC_TOOLCHAIN}/usr/local/share/obggcc/cmake/${host_triplet}.cmake" \
 	-DCMAKE_BUILD_TYPE='MinSizeRel' \
+	-DCMAKE_CXX_FLAGS="-fplt" \
 	-DCMAKE_INSTALL_PREFIX="${install_prefix}" \
 	-DLLVM_HOST_TRIPLE="${host_triplet}" \
 	-DLLVM_NATIVE_TOOL_DIR='/usr/bin' \
