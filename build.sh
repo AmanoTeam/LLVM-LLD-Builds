@@ -40,23 +40,6 @@ if ! [ -f "${zstd_tarball}" ]; then
 		--file="${zstd_tarball}"
 fi
 
-if ! [ -f "${zstd_tarball}" ]; then
-	curl \
-		--url 'https://github.com/madler/zlib/archive/refs/heads/develop.tar.gz' \
-		--retry '30' \
-		--retry-all-errors \
-		--retry-delay '0' \
-		--retry-max-time '0' \
-		--location \
-		--silent \
-		--output "${zstd_tarball}"
-	
-	tar \
-		--directory="$(dirname "${zstd_directory}")" \
-		--extract \
-		--file="${zstd_tarball}"
-fi
-
 if ! [ -f "${zlib_tarball}" ]; then
 	curl \
 		--url 'https://github.com/madler/zlib/archive/refs/heads/develop.tar.gz' \
@@ -180,6 +163,8 @@ cmake \
 	-DLLVM_TOOLCHAIN_TOOLS='llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer;llvm-windres;llvm-ml;llvm-readelf;llvm-size;llvm-cxxfilt' \
 	-Dzstd_LIBRARY="${CROSS_COMPILE_SYSROOT}/lib/libzstd.a" \
 	-Dzstd_INCLUDE_DIR="${CROSS_COMPILE_SYSROOT}/include" \
+	-Dzlib_LIBRARY="${CROSS_COMPILE_SYSROOT}/lib/libz.a" \
+	-Dzlib_INCLUDE_DIR="${CROSS_COMPILE_SYSROOT}/include" \
 	-DCMAKE_INSTALL_RPATH='$ORIGIN/../lib' \
 	"${llvm_directory}/llvm"
 
