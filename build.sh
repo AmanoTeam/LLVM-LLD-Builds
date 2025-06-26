@@ -12,6 +12,9 @@ declare -r llvm_directory="/tmp/llvm-project-llvmorg-${llvm_version}"
 declare -r zstd_tarball='/tmp/zstd.tar.gz'
 declare -r zstd_directory='/tmp/zstd-dev'
 
+declare -r zlib_tarball='/tmp/zlib.tar.gz'
+declare -r zlib_directory='/tmp/zlib-develop'
+
 declare -r install_prefix='/tmp/llvm-ld'
 
 declare -r max_jobs='30'
@@ -35,6 +38,45 @@ if ! [ -f "${zstd_tarball}" ]; then
 		--directory="$(dirname "${zstd_directory}")" \
 		--extract \
 		--file="${zstd_tarball}"
+fi
+
+if ! [ -f "${zstd_tarball}" ]; then
+	curl \
+		--url 'https://github.com/madler/zlib/archive/refs/heads/develop.tar.gz' \
+		--retry '30' \
+		--retry-all-errors \
+		--retry-delay '0' \
+		--retry-max-time '0' \
+		--location \
+		--silent \
+		--output "${zstd_tarball}"
+	
+	tar \
+		--directory="$(dirname "${zstd_directory}")" \
+		--extract \
+		--file="${zstd_tarball}"
+fi
+
+if ! [ -f "${zlib_tarball}" ]; then
+	curl \
+		--url 'https://github.com/madler/zlib/archive/refs/heads/develop.tar.gz' \
+		--retry '30' \
+		--retry-all-errors \
+		--retry-delay '0' \
+		--retry-max-time '0' \
+		--location \
+		--silent \
+		--output "${zlib_tarball}"
+	
+	tar \
+		--directory="$(dirname "${zlib_directory}")" \
+		--extract \
+		--file="${zlib_tarball}"
+	
+	sed \
+		--in-place \
+		's/(UNIX)/(1)/g; s/(NOT APPLE)/(0)/g' \
+		"${zlib_directory}/CMakeLists.txt"
 fi
 
 if ! [ -f "${llvm_tarball}" ]; then
@@ -98,6 +140,21 @@ cmake \
 cmake --build "${PWD}"
 cmake --install "${PWD}" --strip
 
+[ -d "${zlib_directory}/.build" ] || mkdir "${zlib_directory}/.build"
+
+cd "${zlib_directory}/.build"
+rm --force --recursive ./*
+
+cmake \
+	-S "${zlib_directory}" \
+	-B "${PWD}" \
+	-DCMAKE_TOOLCHAIN_FILE="${OBGGCC_TOOLCHAIN}/usr/local/share/obggcc/cmake/${host_triplet}.cmake" \
+	-DCMAKE_INSTALL_PREFIX="${CROSS_COMPILE_SYSROOT}" \
+	-DCMAKE_PLATFORM_NO_VERSIONED_SONAME=ON
+
+cmake --build "${PWD}"
+cmake --install "${PWD}" --strip
+
 [ -d "${llvm_directory}/build" ] || mkdir "${llvm_directory}/build"
 
 cd "${llvm_directory}/build"
@@ -118,6 +175,7 @@ cmake \
 	-DLLVM_BUILD_LLVM_DYLIB='ON' \
 	-DLLVM_ENABLE_LTO='OFF' \
 	-DLLVM_ENABLE_PROJECTS='lld' \
+	-DLLVM_ENABLE_ZLIB='FORCE_ON' \
 	-DLLVM_ENABLE_ZSTD='FORCE_ON' \
 	-DLLVM_TOOLCHAIN_TOOLS='llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer;llvm-windres;llvm-ml;llvm-readelf;llvm-size;llvm-cxxfilt' \
 	-Dzstd_LIBRARY="${CROSS_COMPILE_SYSROOT}/lib/libzstd.a" \
