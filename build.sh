@@ -163,8 +163,8 @@ cmake \
 	-DLLVM_TOOLCHAIN_TOOLS='llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer;llvm-windres;llvm-ml;llvm-readelf;llvm-size;llvm-cxxfilt' \
 	-Dzstd_LIBRARY="${CROSS_COMPILE_SYSROOT}/lib/libzstd.a" \
 	-Dzstd_INCLUDE_DIR="${CROSS_COMPILE_SYSROOT}/include" \
-	-Dzlib_LIBRARY="${CROSS_COMPILE_SYSROOT}/lib/libz.a" \
-	-Dzlib_INCLUDE_DIR="${CROSS_COMPILE_SYSROOT}/include" \
+	-DZLIB_LIBRARY="${CROSS_COMPILE_SYSROOT}/lib/libz.a" \
+	-DZLIB_INCLUDE_DIR="${CROSS_COMPILE_SYSROOT}/include" \
 	-DCMAKE_INSTALL_RPATH='$ORIGIN/../lib' \
 	"${llvm_directory}/llvm"
 
