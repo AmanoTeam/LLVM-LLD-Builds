@@ -21,8 +21,6 @@ declare -r max_jobs='30'
 
 declare -r host_triplet="${1}"
 
-source "${OBGGCC_TOOLCHAIN}/usr/local/share/obggcc/autotools/${host_triplet}.sh"
-
 if ! [ -f "${zstd_tarball}" ]; then
 	curl \
 		--url 'https://github.com/facebook/zstd/archive/refs/heads/dev.tar.gz' \
@@ -111,7 +109,7 @@ rm --force --recursive ./*
 cmake \
 	-S "${zstd_directory}/build/cmake" \
 	-B "${PWD}" \
-	-DCMAKE_TOOLCHAIN_FILE="${OBGGCC_TOOLCHAIN}/usr/local/share/obggcc/cmake/${host_triplet}.cmake" \
+	-DCMAKE_TOOLCHAIN_FILE="/tmp/${host_triplet}.cmake" \
 	-DCMAKE_C_FLAGS="-DZDICT_QSORT=ZDICT_QSORT_MIN" \
 	-DCMAKE_INSTALL_PREFIX="${CROSS_COMPILE_SYSROOT}" \
 	-DZSTD_BUILD_STATIC=ON \
@@ -132,7 +130,7 @@ rm --force --recursive ./*
 cmake \
 	-S "${zlib_directory}" \
 	-B "${PWD}" \
-	-DCMAKE_TOOLCHAIN_FILE="${OBGGCC_TOOLCHAIN}/usr/local/share/obggcc/cmake/${host_triplet}.cmake" \
+	-DCMAKE_TOOLCHAIN_FILE="/tmp/${host_triplet}.cmake" \
 	-DCMAKE_INSTALL_PREFIX="${CROSS_COMPILE_SYSROOT}" \
 	-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
 	-DCMAKE_PLATFORM_NO_VERSIONED_SONAME=ON
