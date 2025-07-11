@@ -147,7 +147,7 @@ rm --force --recursive ./*
 
 cmake \
 	-DCMAKE_TOOLCHAIN_FILE="/tmp/${host_triplet}.cmake" \
-	-DCMAKE_BUILD_TYPE='MinSizeRel' \
+	-DCMAKE_BUILD_TYPE='Release' \
 	-DCMAKE_CXX_FLAGS="-static-libstdc++ -static-libgcc" \
 	-DCMAKE_INSTALL_PREFIX="${install_prefix}" \
 	-DLLVM_HOST_TRIPLE="${host_triplet}" \
@@ -158,7 +158,7 @@ cmake \
 	-DLLVM_INCLUDE_TESTS='OFF' \
 	-DLLVM_BUILD_DOCS='OFF' \
 	-DLLVM_BUILD_LLVM_DYLIB='ON' \
-	-DLLVM_ENABLE_LTO='OFF' \
+	-DLLVM_ENABLE_LTO='ON' \
 	-DLLVM_ENABLE_PROJECTS='lld' \
 	-DLLVM_ENABLE_ZLIB='FORCE_ON' \
 	-DLLVM_ENABLE_ZSTD='FORCE_ON' \
