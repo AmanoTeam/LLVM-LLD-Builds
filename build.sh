@@ -2,6 +2,8 @@
 
 set -eu
 
+declare LLVM_ENABLE_LTO='ON'
+
 declare -r workdir="${PWD}"
 
 declare -r llvm_version='20.1.8'
@@ -20,6 +22,10 @@ declare -r install_prefix='/tmp/llvm-ld'
 declare -r max_jobs='30'
 
 declare -r host_triplet="${1}"
+
+if [[ "${host_triplet}" == *'-android'* ]]; then
+	LLVM_ENABLE_LTO='OFF'
+fi
 
 if ! [ -f "${zstd_tarball}" ]; then
 	curl \
@@ -158,7 +164,7 @@ cmake \
 	-DLLVM_INCLUDE_TESTS='OFF' \
 	-DLLVM_BUILD_DOCS='OFF' \
 	-DLLVM_BUILD_LLVM_DYLIB='ON' \
-	-DLLVM_ENABLE_LTO='OFF' \
+	-DLLVM_ENABLE_LTO="${LLVM_ENABLE_LTO}" \
 	-DLLVM_ENABLE_PROJECTS='lld' \
 	-DLLVM_ENABLE_ZLIB='FORCE_ON' \
 	-DLLVM_ENABLE_ZSTD='FORCE_ON' \
