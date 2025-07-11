@@ -4,7 +4,7 @@ set -eu
 
 declare -r workdir="${PWD}"
 
-declare -r llvm_version='20.1.8'
+declare -r llvm_version='21.1.0'
 
 declare -r llvm_tarball='/tmp/llvm.tar.gz'
 declare -r llvm_directory="/tmp/llvm-project-llvmorg-${llvm_version}"
@@ -114,12 +114,12 @@ cmake \
 	-DCMAKE_TOOLCHAIN_FILE="/tmp/${host_triplet}.cmake" \
 	-DCMAKE_C_FLAGS="-DZDICT_QSORT=ZDICT_QSORT_MIN" \
 	-DCMAKE_INSTALL_PREFIX="${CROSS_COMPILE_SYSROOT}" \
-	-DZSTD_BUILD_STATIC=ON \
-	-DBUILD_SHARED_LIBS=ON \
-	-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-	-DCMAKE_PLATFORM_NO_VERSIONED_SONAME=ON \
-	-DZSTD_BUILD_PROGRAMS=OFF \
-	-DZSTD_BUILD_TESTS=OFF
+	-DZSTD_BUILD_STATIC='ON' \
+	-DBUILD_SHARED_LIBS='ON' \
+	-DCMAKE_POSITION_INDEPENDENT_CODE='ON' \
+	-DCMAKE_PLATFORM_NO_VERSIONED_SONAME='ON' \
+	-DZSTD_BUILD_PROGRAMS='OFF' \
+	-DZSTD_BUILD_TESTS='OFF'
 
 cmake --build "${PWD}"
 cmake --install "${PWD}" --strip
@@ -140,6 +140,35 @@ cmake \
 cmake --build "${PWD}"
 cmake --install "${PWD}" --strip
 
+[ -d "${install_prefix}/lib" ] || mkdir --parent "${install_prefix}/lib"
+
+# libstdc++
+declare name=$(realpath $("${CC}" --print-file-name='libstdc++.so'))
+
+# libestdc++
+if ! [ -f "${name}" ]; then
+	declare name=$(realpath $("${CC}" --print-file-name='libestdc++.so'))
+fi
+
+declare soname=$("${READELF}" -d "${name}" | grep 'SONAME' | sed --regexp-extended 's/.+\[(.+)\]/\1/g')
+
+cp "${name}" "${install_prefix}/lib/${soname}"
+
+# OpenBSD does not have a libgcc library
+if [[ "${CROSS_COMPILE_TRIPLET}" != *'-openbsd'* ]]; then
+	# libgcc_s
+	declare name=$(realpath $("${CC}" --print-file-name='libgcc_s.so.1'))
+	
+	# libegcc
+	if ! [ -f "${name}" ]; then
+		declare name=$(realpath $("${CC}" --print-file-name='libegcc.so'))
+	fi
+	
+	declare soname=$("${READELF}" -d "${name}" | grep 'SONAME' | sed --regexp-extended 's/.+\[(.+)\]/\1/g')
+	
+	cp "${name}" "${install_prefix}/lib/${soname}"
+fi
+
 [ -d "${llvm_directory}/build" ] || mkdir "${llvm_directory}/build"
 
 cd "${llvm_directory}/build"
@@ -147,8 +176,7 @@ rm --force --recursive ./*
 
 cmake \
 	-DCMAKE_TOOLCHAIN_FILE="/tmp/${host_triplet}.cmake" \
-	-DCMAKE_BUILD_TYPE='MinSizeRel' \
-	-DCMAKE_CXX_FLAGS="-static-libstdc++ -static-libgcc" \
+	-DCMAKE_BUILD_TYPE='Release' \
 	-DCMAKE_INSTALL_PREFIX="${install_prefix}" \
 	-DLLVM_HOST_TRIPLE="${host_triplet}" \
 	-DLLVM_NATIVE_TOOL_DIR='/usr/bin' \
