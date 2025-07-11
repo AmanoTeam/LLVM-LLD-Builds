@@ -68,17 +68,10 @@ jobs:
     - name: Apply CMake fixes for Android
       run: |
         sudo sed --in-place '/CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG/d' '/usr/local/share/cmake-'*'/Modules/Platform/Android.cmake'
-    - name: Free up some space
-      run: |
-        curl 'https://raw.githubusercontent.com/AmanoTeam/gha-free-space/refs/heads/master/main.sh' -sSf | bash
-    - name: Install required dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install build-essential || true
     - name: Increase swap space
       run: |
         sudo swapoff -a
-        sudo fallocate -z -l '30G' '/mnt/swapfile'
+        sudo fallocate -z -l '10G' '/mnt/swapfile'
         sudo mkswap '/mnt/swapfile'
         sudo swapon '/mnt/swapfile'
     - name: Cross-compile LLVM LLD to ${{ matrix.target }}
