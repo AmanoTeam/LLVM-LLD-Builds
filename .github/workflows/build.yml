@@ -23,6 +23,7 @@ jobs:
           # Linux (glibc)
           'x86_64-unknown-linux-gnu2.11',
           'i386-unknown-linux-gnu2.11',
+          'arm-unknown-linux-gnueabi2.11',
           'arm-unknown-linux-gnueabihf',
           'aarch64-unknown-linux-gnu',
           
@@ -84,7 +85,7 @@ jobs:
     - name: Cross-compile LLVM LLD to ${{ matrix.target }}
       run: |
         if [[ '${{ matrix.target }}' == *'-linux-musl'* ]]; then
-            declare -r RAIDEN_TAG="$(jq --raw-output '.tag_name' <<< "$(curl --connect-timeout '10' --retry '15' --retry-all-errors --fail --silent --url 'https://api.github.com/repos/AmanoTeam/Raiden/releases/latest')")"
+            declare -r RAIDEN_TAG='1.0' #"$(jq --raw-output '.tag_name' <<< "$(curl --connect-timeout '10' --retry '15' --retry-all-errors --fail --silent --url 'https://api.github.com/repos/AmanoTeam/Raiden/releases/latest')")"
             declare -r RAIDEN_TARBALL='/tmp/toolchain.tar.xz'
             declare -r RAIDEN_URL="https://github.com/AmanoTeam/Raiden/releases/download/${RAIDEN_TAG}/x86_64-unknown-linux-gnu.tar.xz"
             

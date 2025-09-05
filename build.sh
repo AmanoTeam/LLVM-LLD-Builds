@@ -140,6 +140,52 @@ cmake \
 cmake --build "${PWD}"
 cmake --install "${PWD}" --strip
 
+[ -d "${llvm_directory}/build" ] || mkdir "${llvm_directory}/build"
+
+cd "${llvm_directory}/build"
+rm --force --recursive ./*
+a=''
+if [[ "${host_triplet}" == 'arm'*'-android'* ]]; then
+	a='-marm'
+fi
+
+cmake \
+	-DCMAKE_TOOLCHAIN_FILE="/tmp/${host_triplet}.cmake" \
+	-DCMAKE_BUILD_TYPE='Release' \
+	-DCMAKE_CXX_FLAGS="${a}" \
+	-DCMAKE_INSTALL_PREFIX="${install_prefix}" \
+	-DLLVM_HOST_TRIPLE="${host_triplet}" \
+	-DLLVM_NATIVE_TOOL_DIR='/usr/bin' \
+	-DLLVM_ENABLE_ASSERTIONS='OFF' \
+	-DLLVM_INCLUDE_BENCHMARKS='OFF' \
+	-DLLVM_INCLUDE_EXAMPLES='OFF' \
+	-DLLVM_INCLUDE_TESTS='OFF' \
+	-DLLVM_BUILD_DOCS='OFF' \
+	-DLLVM_BUILD_LLVM_DYLIB='ON' \
+	-DLLVM_ENABLE_LTO='OFF' \
+	-DLLVM_ENABLE_PROJECTS='lld' \
+	-DLLVM_ENABLE_ZLIB='FORCE_ON' \
+	-DLLVM_ENABLE_ZSTD='FORCE_ON' \
+	-DLLVM_TOOLCHAIN_TOOLS='llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer;llvm-windres;llvm-ml;llvm-readelf;llvm-size;llvm-cxxfilt' \
+	-Dzstd_LIBRARY="${CROSS_COMPILE_SYSROOT}/lib/libzstd.a" \
+	-Dzstd_INCLUDE_DIR="${CROSS_COMPILE_SYSROOT}/include" \
+	-DZLIB_LIBRARY="${CROSS_COMPILE_SYSROOT}/lib/libz.a" \
+	-DZLIB_INCLUDE_DIR="${CROSS_COMPILE_SYSROOT}/include" \
+	-DCMAKE_INSTALL_RPATH='$ORIGIN/../lib' \
+	"${llvm_directory}/llvm"
+
+cmake --build ./ -- -j '10'
+cmake --install ./ --strip
+
+rm --force --recursive ./*
+
+rm \
+	--force \
+	--recursive \
+	"${install_prefix}/lib" \
+	"${install_prefix}/include" \
+	"${install_prefix}/share"
+
 [ -d "${install_prefix}/lib" ] || mkdir --parent "${install_prefix}/lib"
 
 # libstdc++
@@ -168,37 +214,3 @@ if [[ "${CROSS_COMPILE_TRIPLET}" != *'-openbsd'* ]]; then
 	
 	cp "${name}" "${install_prefix}/lib/${soname}"
 fi
-
-[ -d "${llvm_directory}/build" ] || mkdir "${llvm_directory}/build"
-
-cd "${llvm_directory}/build"
-rm --force --recursive ./*
-
-cmake \
-	-DCMAKE_TOOLCHAIN_FILE="/tmp/${host_triplet}.cmake" \
-	-DCMAKE_BUILD_TYPE='Release' \
-	-DCMAKE_INSTALL_PREFIX="${install_prefix}" \
-	-DLLVM_HOST_TRIPLE="${host_triplet}" \
-	-DLLVM_NATIVE_TOOL_DIR='/usr/bin' \
-	-DLLVM_ENABLE_ASSERTIONS='OFF' \
-	-DLLVM_INCLUDE_BENCHMARKS='OFF' \
-	-DLLVM_INCLUDE_EXAMPLES='OFF' \
-	-DLLVM_INCLUDE_TESTS='OFF' \
-	-DLLVM_BUILD_DOCS='OFF' \
-	-DLLVM_BUILD_LLVM_DYLIB='ON' \
-	-DLLVM_ENABLE_LTO='OFF' \
-	-DLLVM_ENABLE_PROJECTS='lld' \
-	-DLLVM_ENABLE_ZLIB='FORCE_ON' \
-	-DLLVM_ENABLE_ZSTD='FORCE_ON' \
-	-DLLVM_TOOLCHAIN_TOOLS='llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer;llvm-windres;llvm-ml;llvm-readelf;llvm-size;llvm-cxxfilt' \
-	-Dzstd_LIBRARY="${CROSS_COMPILE_SYSROOT}/lib/libzstd.a" \
-	-Dzstd_INCLUDE_DIR="${CROSS_COMPILE_SYSROOT}/include" \
-	-DZLIB_LIBRARY="${CROSS_COMPILE_SYSROOT}/lib/libz.a" \
-	-DZLIB_INCLUDE_DIR="${CROSS_COMPILE_SYSROOT}/include" \
-	-DCMAKE_INSTALL_RPATH='$ORIGIN/../lib' \
-	"${llvm_directory}/llvm"
-
-cmake --build ./ -- -j '10'
-cmake --install ./ --strip
-
-rm --force --recursive ./*
