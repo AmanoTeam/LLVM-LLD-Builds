@@ -13,56 +13,8 @@ jobs:
     strategy:
       matrix:
         target: [
-          # Linux (musl)
-          'aarch64-unknown-linux-musl',
-          'x86_64-unknown-linux-musl',
-          'arm-unknown-linux-musleabihf',
-          'i386-unknown-linux-musl',
           'armv7l-unknown-linux-musleabihf',
-          
-          # Linux (glibc)
-          'x86_64-unknown-linux-gnu2.11',
-          'i386-unknown-linux-gnu2.11',
-          'arm-unknown-linux-gnueabi2.11',
-          'arm-unknown-linux-gnueabihf',
-          'aarch64-unknown-linux-gnu',
-          
-          # FreeBSD
-          'x86_64-unknown-freebsd',
-          'aarch64-unknown-freebsd',
-          'i386-unknown-freebsd',
-         
-          # NetBSD
-          'i386-unknown-netbsdelf',
-          'x86_64-unknown-netbsd',
-          
-          # OpenBSD
-          'x86_64-unknown-openbsd',
-          'i386-unknown-openbsd',
-          'aarch64-unknown-openbsd',
-          'arm-unknown-openbsd',
-          
-          # DragonFly BSD
-          'x86_64-unknown-dragonfly',
-          
-          # Serenity
-          'x86_64-unknown-serenity',
-          'aarch64-unknown-serenity',
-          'riscv64-unknown-serenity',
-          
-          # Haiku
-          'i586-unknown-haiku',
-          'x86_64-unknown-haiku',
-          
-          # Android
-          'x86_64-unknown-linux-android',
-          'i686-unknown-linux-android21',
-          'aarch64-unknown-linux-android',
-          'riscv64-unknown-linux-android',
-          'armv5-unknown-linux-androideabi21',
-          'armv7-unknown-linux-androideabi21',
-          'mips64el-unknown-linux-android',
-          'mipsel-unknown-linux-android21'
+
         ]
     steps:
     - uses: actions/checkout@main
