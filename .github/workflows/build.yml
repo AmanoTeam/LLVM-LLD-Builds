@@ -13,8 +13,8 @@ jobs:
     strategy:
       matrix:
         target: [
-          'armv7l-unknown-linux-musleabihf',
 
+          'armv7l-unknown-linux-musleabihf'
         ]
     steps:
     - uses: actions/checkout@main
@@ -48,7 +48,7 @@ jobs:
             
             # curl --connect-timeout '10' --retry '15' --retry-all-errors --fail --silent --location --url "${RAIDEN_URL}" --output "${RAIDEN_TARBALL}"
             # tar --directory="$(dirname "${RAIDEN_TARBALL}")" --extract --file="${RAIDEN_TARBALL}"
-            pushd /tmp && wget https://nightly.link/AmanoTeam/Raiden/actions/runs/17502291194/x86_64-unknown-linux-gnu.zip && unzip x86_64-unknown-linux-gnu.zip && tar xvf x86_64-unknown-linux-gnu.tar.xz && pushd
+            pushd /tmp && wget https://nightly.link/AmanoTeam/Raiden/actions/runs/17503890488/x86_64-unknown-linux-gnu.zip && unzip x86_64-unknown-linux-gnu.zip && tar xvf x86_64-unknown-linux-gnu.tar.xz && pushd
             
             export RAIDEN_HOME='/tmp/raiden'
             export PATH="${RAIDEN_HOME}/bin:${PATH}"
