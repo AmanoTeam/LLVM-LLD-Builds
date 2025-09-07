@@ -45,9 +45,9 @@ jobs:
           'x86_64-unknown-dragonfly',
           
           # Serenity
-          'x86_64-unknown-serenity',
-          'aarch64-unknown-serenity',
-          'riscv64-unknown-serenity',
+          # 'x86_64-unknown-serenity',
+          # 'aarch64-unknown-serenity',
+          # 'riscv64-unknown-serenity',
           
           # Haiku
           'i586-unknown-haiku',
@@ -80,12 +80,6 @@ jobs:
     - name: Apply CMake fixes for Android
       run: |
         sudo sed --in-place '/CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG/d' '/usr/local/share/cmake-'*'/Modules/Platform/Android.cmake'
-    - name: Increase swap space
-      run: |
-        sudo swapoff -a
-        sudo fallocate -z -l '10G' '/mnt/swapfile'
-        sudo mkswap '/mnt/swapfile'
-        sudo swapon '/mnt/swapfile'
     - name: Cross-compile LLVM LLD to ${{ matrix.target }}
       run: |
         if [[ '${{ matrix.target }}' == *'-linux-musl'* ]]; then
@@ -95,7 +89,6 @@ jobs:
             
             curl --connect-timeout '10' --retry '15' --retry-all-errors --fail --silent --location --url "${RAIDEN_URL}" --output "${RAIDEN_TARBALL}"
             tar --directory="$(dirname "${RAIDEN_TARBALL}")" --extract --file="${RAIDEN_TARBALL}"
-            # pushd /tmp && wget https://nightly.link/AmanoTeam/Raiden/actions/runs/17509159757/x86_64-unknown-linux-gnu.zip && unzip x86_64-unknown-linux-gnu.zip && tar xvf x86_64-unknown-linux-gnu.tar.xz && pushd
             
             export RAIDEN_HOME='/tmp/raiden'
             export PATH="${RAIDEN_HOME}/bin:${PATH}"
@@ -192,7 +185,6 @@ jobs:
             
             curl --connect-timeout '10' --retry '15' --retry-all-errors --fail --silent --location --url "${PINO_URL}" --output "${PINO_TARBALL}"
             tar --directory="$(dirname "${PINO_TARBALL}")" --extract --file="${PINO_TARBALL}"
-            # pushd /tmp && wget https://nightly.link/AmanoTeam/Pino/actions/runs/17487083935/x86_64-unknown-linux-gnu.zip && unzip x86_64-unknown-linux-gnu.zip && tar xvf x86_64-unknown-linux-gnu.tar.xz && pushd
             
             export PINO_HOME='/tmp/pino'
             export PATH="${PINO_HOME}/bin:${PATH}"

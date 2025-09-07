@@ -144,15 +144,15 @@ cmake --install "${PWD}" --strip
 
 cd "${llvm_directory}/build"
 rm --force --recursive ./*
-a=''
-if [[ "${host_triplet}" == 'arm'*'-android'* ]]; then
-	a='-marm'
+
+if [[ "${host_triplet}" == 'armv5'*'-android'* ]]; then
+	export PINO_ARM_MODE=true
 fi
 
 cmake \
 	-DCMAKE_TOOLCHAIN_FILE="/tmp/${host_triplet}.cmake" \
 	-DCMAKE_BUILD_TYPE='Release' \
-	-DCMAKE_CXX_FLAGS="${a}" \
+	-DCMAKE_CXX_FLAGS='-static-libstdc++' \
 	-DCMAKE_INSTALL_PREFIX="${install_prefix}" \
 	-DLLVM_HOST_TRIPLE="${host_triplet}" \
 	-DLLVM_NATIVE_TOOL_DIR='/usr/bin' \
