@@ -152,7 +152,7 @@ fi
 cmake \
 	-DCMAKE_TOOLCHAIN_FILE="/tmp/${host_triplet}.cmake" \
 	-DCMAKE_BUILD_TYPE='Release' \
-	-DCMAKE_CXX_FLAGS='-static-libstdc++' \
+	-DCMAKE_CXX_FLAGS='-static-libstdc++ -static-libgcc' \
 	-DCMAKE_INSTALL_PREFIX="${install_prefix}" \
 	-DLLVM_HOST_TRIPLE="${host_triplet}" \
 	-DLLVM_NATIVE_TOOL_DIR='/usr/bin' \
