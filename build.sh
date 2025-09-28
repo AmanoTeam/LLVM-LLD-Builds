@@ -4,7 +4,7 @@ set -eu
 
 declare -r workdir="${PWD}"
 
-declare -r llvm_version='21.1.0'
+declare -r llvm_version='21.1.2'
 
 declare -r llvm_tarball='/tmp/llvm.tar.gz'
 declare -r llvm_directory="/tmp/llvm-project-llvmorg-${llvm_version}"
