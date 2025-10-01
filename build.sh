@@ -58,6 +58,11 @@ if ! [ -f "${zlib_tarball}" ]; then
 		--in-place \
 		's/(UNIX)/(1)/g; s/(NOT APPLE)/(0)/g' \
 		"${zlib_directory}/CMakeLists.txt"
+	
+	sed \
+		--in-place \
+		's/-coverage/-v/g;' \
+		"${zlib_directory}/CMakeLists.txt"
 fi
 
 if ! [ -f "${llvm_tarball}" ]; then
