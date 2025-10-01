@@ -58,11 +58,6 @@ if ! [ -f "${zlib_tarball}" ]; then
 		--in-place \
 		's/(UNIX)/(1)/g; s/(NOT APPLE)/(0)/g' \
 		"${zlib_directory}/CMakeLists.txt"
-	
-	sed \
-		--in-place \
-		's/-coverage/-v/g;' \
-		"${zlib_directory}/CMakeLists.txt"
 fi
 
 if ! [ -f "${llvm_tarball}" ]; then
@@ -140,7 +135,8 @@ cmake \
 	-DCMAKE_TOOLCHAIN_FILE="/tmp/${host_triplet}.cmake" \
 	-DCMAKE_INSTALL_PREFIX="${CROSS_COMPILE_SYSROOT}" \
 	-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-	-DCMAKE_PLATFORM_NO_VERSIONED_SONAME=ON
+	-DCMAKE_PLATFORM_NO_VERSIONED_SONAME=ON \
+	-DZLIB_BUILD_TESTING='OFF'
 
 cmake --build "${PWD}"
 cmake --install "${PWD}" --strip

@@ -215,7 +215,7 @@ jobs:
             source "${DARWIN_HOME}/usr/local/share/darwin/autotools/${{ matrix.target }}.sh"
         fi
         
-        ln --symbolic '/tmp/'*'/usr/local/share/'*'/'*'/'* '/tmp'
+        ln --force --symbolic '/tmp/'*'/usr/local/share/'*'/'*'/'* '/tmp'
         
         bash './build.sh' '${{ matrix.target }}'
     - name: Create logs
