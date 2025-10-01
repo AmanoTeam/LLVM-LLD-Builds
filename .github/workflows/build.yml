@@ -194,8 +194,8 @@ jobs:
             rm \
                 "${PINO_HOME}/include/bionic/"{zconf,zlib}'.h' \
                 "${PINO_HOME}/"*'-unknown-linux-'{androideabi,android}'/include/'{zconf,zlib}'.h' \
-                "${PINO_HOME}/"*'-unknown-linux-android'*'/lib/libz.'{a,so} \
-                "${PINO_HOME}/"*'-unknown-linux-android'*'/lib/static/libz.'{a,so}
+                "${PINO_HOME}/"*'-unknown-linux-android'*'/lib/libz.so' \
+                "${PINO_HOME}/"*'-unknown-linux-android'*'/lib/static/libz.so'
         fi
         
         ln --symbolic '/tmp/'*'/usr/local/share/'*'/'*'/'* '/tmp'
