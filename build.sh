@@ -149,10 +149,22 @@ if [[ "${host_triplet}" == 'armv5'*'-android'* ]]; then
 	export PINO_ARM_MODE=true
 fi
 
+declare cmake_flags=''
+declare cmake_cxx_flags=''
+
+if [[ "${host_triplet}" = *'-darwin'* ]]; then
+	cmake_flags+='-DCMAKE_SYSTEM_NAME=Darwin'
+fi
+
+if [[ "${host_triplet}" != *'-darwin'* ]]; then
+	cmake_cxx_flags+='-static-libstdc++ -static-libgcc'
+fi
+
 cmake \
+	${cmake_flags} \
 	-DCMAKE_TOOLCHAIN_FILE="/tmp/${host_triplet}.cmake" \
 	-DCMAKE_BUILD_TYPE='Release' \
-	-DCMAKE_CXX_FLAGS='-static-libstdc++ -static-libgcc' \
+	-DCMAKE_CXX_FLAGS="${cmake_cxx_flags}" \
 	-DCMAKE_INSTALL_PREFIX="${install_prefix}" \
 	-DLLVM_HOST_TRIPLE="${host_triplet}" \
 	-DLLVM_NATIVE_TOOL_DIR='/usr/bin' \
@@ -186,31 +198,33 @@ rm \
 	"${install_prefix}/include" \
 	"${install_prefix}/share"
 
-[ -d "${install_prefix}/lib" ] || mkdir --parent "${install_prefix}/lib"
-
-# libstdc++
-declare name=$(realpath $("${CC}" --print-file-name='libstdc++.so'))
-
-# libestdc++
-if ! [ -f "${name}" ]; then
-	declare name=$(realpath $("${CC}" --print-file-name='libestdc++.so'))
-fi
-
-declare soname=$("${READELF}" -d "${name}" | grep 'SONAME' | sed --regexp-extended 's/.+\[(.+)\]/\1/g')
-
-cp "${name}" "${install_prefix}/lib/${soname}"
-
-# OpenBSD does not have a libgcc library
-if [[ "${CROSS_COMPILE_TRIPLET}" != *'-openbsd'* ]]; then
-	# libgcc_s
-	declare name=$(realpath $("${CC}" --print-file-name='libgcc_s.so.1'))
+if [[ "${host_triplet}" != *'-darwin'* ]]; then
+	[ -d "${install_prefix}/lib" ] || mkdir --parent "${install_prefix}/lib"
 	
-	# libegcc
+	# libstdc++
+	declare name=$(realpath $("${CC}" --print-file-name='libstdc++.so'))
+	
+	# libestdc++
 	if ! [ -f "${name}" ]; then
-		declare name=$(realpath $("${CC}" --print-file-name='libegcc.so'))
+		declare name=$(realpath $("${CC}" --print-file-name='libestdc++.so'))
 	fi
 	
 	declare soname=$("${READELF}" -d "${name}" | grep 'SONAME' | sed --regexp-extended 's/.+\[(.+)\]/\1/g')
 	
 	cp "${name}" "${install_prefix}/lib/${soname}"
+	
+	# OpenBSD does not have a libgcc library
+	if [[ "${CROSS_COMPILE_TRIPLET}" != *'-openbsd'* ]]; then
+		# libgcc_s
+		declare name=$(realpath $("${CC}" --print-file-name='libgcc_s.so.1'))
+		
+		# libegcc
+		if ! [ -f "${name}" ]; then
+			declare name=$(realpath $("${CC}" --print-file-name='libegcc.so'))
+		fi
+		
+		declare soname=$("${READELF}" -d "${name}" | grep 'SONAME' | sed --regexp-extended 's/.+\[(.+)\]/\1/g')
+		
+		cp "${name}" "${install_prefix}/lib/${soname}"
+	fi
 fi
